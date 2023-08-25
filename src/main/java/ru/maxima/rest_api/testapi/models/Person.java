@@ -5,7 +5,11 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
+import lombok.Data;
 
+import java.time.LocalDateTime;
+
+@Data
 @Entity
 @Table(name = "person")
 public class Person {
@@ -28,38 +32,14 @@ public class Person {
     @Column(name = "email")
     private String email;
 
-    public Person(Long id, String name, int age, String email) {
-        this.id = id;
-        this.name = name;
-        this.age = age;
-        this.email = email;
-    }
-    public Person() {
-    }
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public int getAge() {
-        return age;
-    }
-    public void setAge(int age) {
-        this.age = age;
-    }
+    @Column(name = "created_at")
+    private LocalDateTime created_at;
 
-    public String getEmail() {
-        return email;
-    }
+    @Column(name = "update_at")
+    private LocalDateTime update_at;
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    @Column(name = "removed")
+    private Boolean removed;
+
+
 }

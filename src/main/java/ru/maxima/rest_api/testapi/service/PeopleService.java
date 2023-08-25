@@ -1,31 +1,53 @@
 package ru.maxima.rest_api.testapi.service;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.maxima.rest_api.testapi.dto.PersonDTO;
 import ru.maxima.rest_api.testapi.models.Person;
 import ru.maxima.rest_api.testapi.repositories.PeopleRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PeopleService {
     private final PeopleRepository peopleRepository;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public PeopleService(PeopleRepository peopleRepository) {
+    public PeopleService(PeopleRepository peopleRepository, ModelMapper modelMapper) {
         this.peopleRepository = peopleRepository;
+        this.modelMapper = modelMapper;
     }
 
     public void save(Person person) {
+        enrich(person);
         peopleRepository.save(person);
     }
+    private void enrich(Person person) {
+        person.setCreated_at(LocalDateTime.now());
+        person.setUpdate_at(LocalDateTime.now());
+        person.setRemoved(false);
 
-    public List<Person> findAll(){
-       return peopleRepository.findAll();
     }
 
-    public Optional<Person> findById(Long id){
-        return peopleRepository.findById(id);
+    public List<PersonDTO> findAll(){
+       return peopleRepository.findAll(Sort.by(Sort.Direction.ASC, "id"))
+               .stream()
+               .map(this::convertToPersonDTO)
+               .collect(Collectors.toList());
+
     }
+
+    public PersonDTO findById(Long id){
+        return convertToPersonDTO(peopleRepository.findById(id).orElse(null));
+    }
+
+    public PersonDTO convertToPersonDTO(Person person) {
+       return modelMapper.map(person, PersonDTO.class);
+     }
 }
