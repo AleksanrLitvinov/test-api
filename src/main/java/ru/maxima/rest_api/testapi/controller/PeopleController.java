@@ -39,18 +39,18 @@ public class PeopleController {
 
     @GetMapping()
     public List<PersonDTO> getAllPeople() {
-      return peopleService.findAll();
+        return peopleService.findAll();
     }
 
     @GetMapping("/{id}")
     public PersonDTO getPersonById(@PathVariable Long id) {
-      return peopleService.findById(id);
+        return peopleService.findById(id);
     }
 
 
     @PostMapping
     public ResponseEntity<HttpStatus> create(@RequestBody @Valid PersonDTO personDTO, BindingResult bindingResult) {
-        if (bindingResult.hasErrors()){
+        if (bindingResult.hasErrors()) {
             StringBuilder builder = new StringBuilder();
 
             List<FieldError> fieldErrors = bindingResult.getFieldErrors();
@@ -62,9 +62,8 @@ public class PeopleController {
     }
 
     private Person convertToPerson(PersonDTO personDTO) {
-       return modelMapper.map(personDTO, Person.class);
+        return modelMapper.map(personDTO, Person.class);
     }
-
 
 
     @ExceptionHandler
@@ -73,22 +72,28 @@ public class PeopleController {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/delete/{id}")
+    public void delete(@PathVariable Long id) {
+        peopleService.delete(id);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @GetMapping ("/update/{id}")
+    public PersonDTO update(@PathVariable Long id, @RequestBody PersonDTO personDTO) {
+        return peopleService.update(id, personDTO);
+    }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

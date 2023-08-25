@@ -50,4 +50,20 @@ public class PeopleService {
     public PersonDTO convertToPersonDTO(Person person) {
        return modelMapper.map(person, PersonDTO.class);
      }
+
+     public void delete(Long id) {
+        Person person = peopleRepository.findById(id).orElse(null);
+        person.setRemoved(true);
+        peopleRepository.save(person);
+     }
+
+     public PersonDTO update(Long id, PersonDTO personDTO){
+        Person person = peopleRepository.findById(id).orElse(null);
+        person.setName(personDTO.getName());
+        person.setAge(personDTO.getAge());
+        person.setEmail(personDTO.getEmail());
+        person.setCreated_at(LocalDateTime.now());
+        peopleRepository.save(person);
+         return modelMapper.map(person, PersonDTO.class);
+     }
 }
